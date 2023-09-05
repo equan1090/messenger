@@ -1,0 +1,86 @@
+.navbar-content {
+    position: relative;
+    align-items: center;
+    box-sizing: border-box;
+    clear: both;
+    display: flex;
+    height: 100px;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1020px;
+    overflow: auto;
+    z-index: 1;
+}
+
+.splash-header {
+    font-size: 64px;
+    color: rgb(10 124 255);
+}
+
+.underline-on-hover:hover {
+    text-decoration: underline;
+    text-decoration-color: rgb(10 124 255);
+    text-underline-offset: 7px; /* Add distance between text and underline */
+    text-decoration-skip-ink: none; /* Prevent underline from going over text descenders */
+    text-decoration-thickness: 3px;
+}
+
+
+.navbar-item {
+    margin: 0 15px;
+    font-weight: 500;
+    line-height: 50px;
+    font-size: 17px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.splash-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1.3fr 0.7fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+    "splash-tagline splash-image"
+    "splash-login splash-image"
+    ". .";
+    grid-area: splash-content;
+
+    position: relative;
+    align-items: center;
+    box-sizing: border-box;
+    clear: both;
+
+    height: 100px;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1020px;
+
+}
+.no-padding {
+    padding: 0;
+}
+
+.login-btn {
+    margin-top: 1rem;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 50px;
+}
+#tagline {
+    margin: 2rem 0;
+}
+.splash-btns {
+    display: flex;
+    align-items: center;
+}
+.signup-btn {
+    margin: 1rem 0 0 1rem;
+}

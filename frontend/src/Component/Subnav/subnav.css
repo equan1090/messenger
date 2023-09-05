@@ -1,0 +1,11 @@
+.subnav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem;
+}
+
+.compose-icon {
+    height: 24px;
+    width: 24px;
+}
