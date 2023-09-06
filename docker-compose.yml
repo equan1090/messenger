@@ -5,11 +5,16 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app # Map the local codebase to the container
+      - /app/node_modules # Exclude node_modules to avoid overriding
+    environment:
+      - CHOKIDAR_USEPOLLING=true # For hot-reloading
 
   backend:
     build: ./backend
     ports:
-      - "8080:8080"
+      - "5000:8080"
 
   mongodb:
     image: mongo
