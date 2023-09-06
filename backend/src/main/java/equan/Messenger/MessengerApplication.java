@@ -15,23 +15,5 @@ public class MessengerApplication {
 	}
 
 
-	@Bean
-	CommandLineRunner runner(UserRepository repository) {
-		return args -> {
-			User user = new User(
-					"Eric",
-					"Quan",
-					"e@gmail.com",
-					"password"
-			);
-
-			repository.findUserByEmail("e@gmail.com").ifPresentOrElse(s -> {
-				System.out.println(s + " already exists");
-			}, () -> {
-				System.out.println("Inserting student " + user);
-				repository.insert(user);
-			});
-		};
-	}
 
 }

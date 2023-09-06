@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './signup.css';
 import {useDispatch} from "react-redux";
-import {bindActionCreators} from "@reduxjs/toolkit";
-import {actionCreators, State} from '../../state/index';
+import { useSignupMutation } from '../../state/service/user';
 
 
 
@@ -12,61 +11,61 @@ export default function SignupPage() {
     const dispatch = useDispatch();
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
-    const [emailAddress, setEmailAddress] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [error, setErrors] = useState<string[]>([]);
+    const [errors, setErrors] = useState<string[]>([]);
+    const [signup, {isError, error}] = useSignupMutation();
+
+
+    // const fetchUsers = async (): Promise<void> => {
+    //     try {
+    //         const res = await fetch("http://localhost:8080/api/v1/users");
+    //         if (!res.ok) {
+    //             throw new Error("Res was not ok");
+    //         }
+    //         const data = await res.json();
+    //         console.log('Fetched users: ', data)
+    //     }catch (error) {
+    //         console.log("fetch error: ", error)
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     fetchUsers()
+    // }, [])
 
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        console.log('in the onsubmit')
+        console.log('in onsubmit')
         event.preventDefault();
 
-        let errors: string[] = [];
-        if (password !== confirmPassword) {
-            errors.push('Passwords do not match');
-        }
-        if (!firstName || !lastName || !emailAddress || !password || !confirmPassword) {
+        let errors: string[] = []
+        if (password !== confirmPassword) errors.push("Passwords do not match")
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
             errors.push("Please fill out all fields");
         }
-
         if (errors.length) {
             setErrors(errors);
             return null;
         }
 
-        try {
-            const response = await fetch("/api/users/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    firstName,
-                    lastName,
-                    emailAddress,
-                    password
-                }),
-            })
-
-            if (response.ok) {
-                console.log('in the res.ok')
-                setFirstName('');
-                setLastName('');
-                setEmailAddress('');
-                setPassword('');
-                setConfirmPassword('');
-                setErrors([]);
-            } else {
-                const errorData = await response.json();
-                setErrors([errorData.error]);
-            }
-
-        } catch (error) {
-            console.error('An error occurred when registering:', error)
+        const newUser = {
+            firstName,
+            lastName,
+            email,
+            password
         }
 
-
+        try {
+            await signup(newUser).unwrap();
+            
+            setErrors([])
+        } catch (error) {
+            const message = (error as any).data.message;
+            errors.push(message)
+            setErrors(errors)
+        }
 
     }
 
@@ -111,8 +110,8 @@ export default function SignupPage() {
                             <Form.Group controlId="Email" className="mb-3">
                                 <Form.Control type="email"
                                               placeholder="Email"
-                                              value={emailAddress}
-                                              onChange={e => setEmailAddress(e.target.value)}
+                                              value={email}
+                                              onChange={e => setEmail(e.target.value)}
                                               required
                                 />
                             </Form.Group>
@@ -136,9 +135,9 @@ export default function SignupPage() {
                             </Form.Group>
                             <Row>
                                 <Col>
-                                    {error.length > 0 && (
+                                    {errors.length > 0 && (
                                         <div className="error-list">
-                                            {error.map((error, index) => (
+                                            {errors.map((error, index) => (
                                                 <li key={index}>{error}</li>
                                             ))}
                                         </div>
