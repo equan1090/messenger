@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import './splashpage.css';
@@ -7,10 +7,32 @@ import splashimage from '../../resources/images/splashimage.jpg';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { useLoginMutation } from '../../state/service/user';
 
 export default function SplashPage(): JSX.Element {
-    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errors, setErrors] = useState<string[]>([]);
+    const [login] = useLoginMutation();
+
+
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        console.log("in signup submit")
         event.preventDefault();
+        const user = {
+            email,
+            password
+        }
+
+
+        try {
+            console.log('user', user)
+            await login(user).unwrap();
+        } catch (error) {
+            console.error("error)")
+        }
 
     };
 
@@ -60,10 +82,20 @@ export default function SplashPage(): JSX.Element {
                         <div className="splash-login">
                             <Form onSubmit={handleSubmit}>
                                 <FloatingLabel controlId="floatingInput" label="Email" className="mb-3">
-                                    <Form.Control type="email" placeholder="Email" />
+                                    <Form.Control
+                                    type="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    />
                                 </FloatingLabel>
                                 <FloatingLabel controlId="floatingPassword" label="Password">
-                                    <Form.Control type="password" placeholder="Password" />
+                                    <Form.Control
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange = {e => setPassword(e.target.value)}
+                                     />
                                 </FloatingLabel>
                                 <div className="splash-btns">
                                     <Button className='login-btn' type="submit">

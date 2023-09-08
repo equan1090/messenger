@@ -9,20 +9,33 @@ interface SignupRequest {
     password: string;
 }
 
+interface LoginRequest {
+    email: string;
+    password: string;
+}
+
 export const userSlice = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
     endpoints: (builder) => ({
         signup: builder.mutation<void, SignupRequest>({
             query: (newUser) => ({
-                url: `/api/v1/users/signup`,
+                // url: `/api/v1/users/signup`,
+                url: "/api/v1/auth/register",
                 method: `POST`,
                 body: newUser
             }),
         }),
+        login: builder.mutation<void, LoginRequest>({
+            query: (credentials) => ({
+                url: `/api/v1/auth/login`,
+                method: "POST",
+                body: credentials,
+            })
+        })
     }),
 
   });
 
 
-  export const { useSignupMutation } = userSlice;
+  export const { useSignupMutation, useLoginMutation } = userSlice;

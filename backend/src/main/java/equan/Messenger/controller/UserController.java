@@ -22,11 +22,17 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> signUp(@RequestBody User newUser) {
+//    @PostMapping("/signup")
+//    public ResponseEntity<User> signUp(@RequestBody User newUser) {
+//
+//        User registeredUser = userService.createUser(newUser);
+//
+//        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+//    }
 
-        User registeredUser = userService.createUser(newUser);
+//    @PostMapping("/login")
+//    public ResponseEntity<User> login(@RequestBody User user) {
+//
+//    }
 
-        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-    }
 }
