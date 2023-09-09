@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import './splashpage.css';
@@ -8,18 +8,30 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useLoginMutation } from '../../state/service/user';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../../state/slice/authSlice';
 
 export default function SplashPage(): JSX.Element {
-
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errors, setErrors] = useState<string[]>([]);
-    const [login] = useLoginMutation();
+    const [
+        loginUser,
+        {
+            data: loginData,
+            isSuccess: isLoginSuccess,
+            isError: isLoginError,
+            error: loginError
+        }
+        ] = useLoginMutation();
 
 
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        console.log("in signup submit")
+        let errors: string[] = []
         event.preventDefault();
         const user = {
             email,
@@ -28,13 +40,26 @@ export default function SplashPage(): JSX.Element {
 
 
         try {
-            console.log('user', user)
-            await login(user).unwrap();
+
+            const res = await loginUser(user).unwrap();
+
+            dispatch(setCredentials(res));
+
+
+
         } catch (error) {
-            console.error("error)")
+            errors.push("Invalid email or password")
+            setErrors(errors)
         }
 
     };
+
+    useEffect(() => {
+        if(isLoginSuccess){
+            
+            navigate("/t")
+        }
+    }, [isLoginSuccess])
 
     return (
         <div className="splash-wrapper">
@@ -97,6 +122,17 @@ export default function SplashPage(): JSX.Element {
                                     onChange = {e => setPassword(e.target.value)}
                                      />
                                 </FloatingLabel>
+
+                                <div>
+                                    {errors.length > 0 && (
+                                        <div className="error-list">
+                                            {errors.map((error, index) => (
+                                                <li key={index}>{error}</li>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="splash-btns">
                                     <Button className='login-btn' type="submit">
                                         Login

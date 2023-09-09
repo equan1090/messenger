@@ -19,26 +19,11 @@ export default function SignupPage() {
 
     let navigate = useNavigate();
 
-    // const fetchUsers = async (): Promise<void> => {
-    //     try {
-    //         const res = await fetch("http://localhost:8080/api/v1/users");
-    //         if (!res.ok) {
-    //             throw new Error("Res was not ok");
-    //         }
-    //         const data = await res.json();
-    //         console.log('Fetched users: ', data)
-    //     }catch (error) {
-    //         console.log("fetch error: ", error)
-    //     }
-    // }
 
-    // useEffect(() => {
-    //     fetchUsers()
-    // }, [])
 
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        console.log('in register onsubmit')
+     
         event.preventDefault();
 
         let errors: string[] = []

@@ -1,4 +1,4 @@
-package equan.Messenger.controller;
+package equan.Messenger.model;
 
 
 import lombok.AllArgsConstructor;
@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationResponse {
     private String token;
+    private User user;
 }

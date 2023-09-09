@@ -1,5 +1,8 @@
 package equan.Messenger.controller;
 
+import equan.Messenger.model.AuthenticationRequest;
+import equan.Messenger.model.AuthenticationResponse;
+import equan.Messenger.model.RegisterRequest;
 import equan.Messenger.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        System.out.println("request " + request);
+
         return ResponseEntity.ok(service.register(request));
     }
 

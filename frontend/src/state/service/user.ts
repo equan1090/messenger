@@ -14,6 +14,9 @@ interface LoginRequest {
     password: string;
 }
 
+
+
+
 export const userSlice = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
@@ -28,7 +31,7 @@ export const userSlice = createApi({
         }),
         login: builder.mutation<void, LoginRequest>({
             query: (credentials) => ({
-                url: `/api/v1/auth/login`,
+                url: `/api/v1/auth/authenticate`,
                 method: "POST",
                 body: credentials,
             })
