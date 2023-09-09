@@ -4,31 +4,67 @@ import equan.Messenger.exception.ApiRequestException;
 import equan.Messenger.model.User;
 import equan.Messenger.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
+    private PasswordEncoder encoder;
     private final UserRepository userRepository;
+
+    public enum FriendAction {
+        ADD,
+        REMOVE
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findUserByEmail(username).orElseThrow(() -> new UsernameNotFoundException("user is not valid"));
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
 
     }
+    public void updateFriend(String email, String friendEmail, FriendAction action) {
+        Optional<User> userOpt = userRepository.findUserByEmail(email);
+        Optional<User> friendOpt = userRepository.findUserByEmail(friendEmail);
 
-    public User createUser(User user) {
+        if (userOpt.isPresent() && friendOpt.isPresent()) {
+            User user = userOpt.get();
+            User friend = friendOpt.get();
 
-        Optional<User> existingUser = userRepository.findUserByEmail(user.getEmail());
+            switch (action) {
+                case ADD:
+                    user.getFriends().add(friend.getId());
+                    friend.getFriends().add(user.getId());
+                    break;
+                case REMOVE:
+                    user.getFriends().remove(friend.getId());
+                    friend.getFriends().remove(user.getId());
+                    break;
+            }
 
-        if (existingUser.isPresent()) {
-            throw new ApiRequestException("Email already exists");
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+            userRepository.save(user);
+            userRepository.save(friend);
         }
-        return userRepository.insert(user);
+    }
+
+
+    public void addFriend(String email, String friendEmail) {
+        updateFriend(email, friendEmail, FriendAction.ADD);
+    }
+
+    public void removeFriend(String email, String friendEmail) {
+        updateFriend(email, friendEmail, FriendAction.REMOVE);
     }
 }
